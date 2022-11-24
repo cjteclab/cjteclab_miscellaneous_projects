@@ -71,23 +71,25 @@ class Molecule():
         --------
         >>> a = 'H2O'
         >>> test_mol_a = Molecule(a)
-        >>> test_mol_a.molecule_elements
+        >>> test_mol_a.extract_elements(a)
         {'H': '2', 'O': '1'}
 
         >>> b = 'H2SO4'
         >>> test_mol_b = Molecule(b)
-        >>> test_mol_b.molecule_elements
+        >>> test_mol_b.extract_elements(b)
         {'H': '2', 'S': 1, 'O': '4'}
         """
         # Can be pack into a dictcomprehension, but less readability
         molecule_elements = {}
+        # Split the string at each upper letter
         splitted_string = re.sub(r"([A-Z])", r" \1", molecule_string).strip().split()
         for unit in splitted_string:
             if unit.isalpha():
                 molecule_elements.update({unit: '1'})
             else:
+                # Split the string between letter and number
                 # add dict(element: count) via .update to molecule_dict
-                # dict expects an iterable of two-item iterables, so re.split
+                # dict() expects an iterable of two-item iterables, so re.split
                 # need to put in a list
                 molecule_elements.update(dict([re.split('(?<=\D)(?=\d)', unit)]))
         return molecule_elements
@@ -106,22 +108,27 @@ class Molecule():
             Weight of the molecule with the unit g/mol.
         --------
         >>> a = 'H2O'
+        >>> a_dict = {'H': '2', 'O': '1'}
         >>> test_mol_a = Molecule(a)
-        >>> test_mol_a.molecule_mass
+        >>> test_mol_a.calc_molecule_weight(a)
         18.01528
 
-        >>> b = 'H2SO4'
+        >>> b = 'H2O'
+        >>> b_dict = {'H': '2', 'S': 1 'O': '4'}
         >>> test_mol_b = Molecule(b)
-        >>> test_mol_b.molecule_mass
+        >>> test_mol_b.calc_molecule_weight(b)
         98.07848
         """
         molecule_mass = 0
-        for element, count in molecule_elements.items():
-            molecule_mass += PERIODICTABLE[element] * int(count)
-            # Pythonic Way:
-            # sum(TABLEOFELEMENTS[element] * int(count) for element, count
-            # in molecule_elements.items())
-        return molecule_mass
+        try:
+            for element, count in molecule_elements.items():
+                molecule_mass += PERIODICTABLE[element] * int(count)
+                # Pythonic Way:
+                # sum(TABLEOFELEMENTS[element] * int(count) for element, count
+                # in molecule_elements.items())
+            return molecule_mass
+        except KeyError:
+            return 0
 
 
 def clear_output():
@@ -163,8 +170,11 @@ def main():
         clear_output()
         input_molecule = input('Please enter molecular formular of the molecule: ')
         history.append(Molecule(input_molecule))
-        print(f'The molecule mass of {history[-1].molecule_string} is: '
-              f'{history[-1].molecule_mass} g/mol')
+        if history[-1].molecule_mass == 0:
+            print("The molecular formular you have enterd can't be calculated.")
+        else:
+            print(f'The molecule mass of {history[-1].molecule_string} is: '
+                  f'{history[-1].molecule_mass} g/mol')
         print()
         decision = input('Calculate another moleule mass (y/n) '
                          'or look at history (h)? ')
