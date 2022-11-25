@@ -1,0 +1,29 @@
+Cursor,der Mauszeiger
+Arrow,der Pfeil
+Right button mouse,die linke Maustaste
+Left button mouse,die rechte Maustaste
+File,die Datei
+Directory,das Verzeichnis
+Button,der Knopf
+Browser,der Browser
+Double-click,der Doppelklick
+Backup,die Sicherheitskopie
+Background-color,die Hintergrundfarbe
+Table,die Tabelle
+Column,die Spalte
+Row,die Zeile
+Cell,die Zelle
+Esc key,die Escapetaste
+Delete key,die Löschtaste
+Tabulator key,die Tabulatortaste
+Device,das Gerät
+User,der Benutzer
+Password,das Passwort
+Webpage,die Webseite
+Virus,das/der Virus
+Toolbar,die Werkzeugleiste
+Query,die Anfrage
+Load,die Belastung
+Operating system,das Betriebssystem
+Screensaver,der Bildschirmschoner
+Bandwidth,die Bandbreite
