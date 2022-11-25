@@ -10,7 +10,7 @@ Usage
 The user have to add vocabulary lists manually by writing txt-files into the
 subdirecory **lessons**. Each line in such a file looks like following:
 "english word,german word".
-After you have start the vocabulary trainer you just have to follow the
+After you have started the vocabulary trainer you just have to follow the
 prompts.
 
 Author
