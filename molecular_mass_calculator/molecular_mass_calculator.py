@@ -23,12 +23,7 @@ from typing import Dict
 
 
 class Molecule():
-    """ Representation of a searched Molecule.
-
-    Parameters
-    ----------
-    molecule_string : str
-        Representation of the searched molecular formular.
+    """Representation of a searched Molecule.
 
     Attributes
     ----------
@@ -46,14 +41,44 @@ class Molecule():
     calc_molecule_weight(molecule_elements):
         Caclulate the weight of the molecule.
 
+    Examples
+    --------
+    >>> test_molecule_a = Molecule()
+    Please enter molecular formular of the molecule: H20
+    >>> test_molecule_a.molecule_formular
+    'H2O'
+    >>> test_molecule_a.molecule_elements
+    {'H': '2', 'O': '1'}
+    >>> test_molecule_a.molecule_mass
+    18.01528
+
+    >>> test_molecule_b = Molecule()
+    Please enter molecular formular of the molecule: H2SO4
+    >>> test_molecule_b.molecule_formular
+    'H2SO4'
+    >>> test_molecule_b.molecule_elements
+    {'H': '2', 'S': 1, 'O': '4'}
+    >>> test_molecule_b.molecule_mass
+    98.07848
     """
 
-    def __init__(self, molecule_string: str):
-        self.molecule_string = molecule_string
-        self.molecule_elements = self.extract_elements(self.molecule_string)
+    def __init__(self):
+        """Initiate instances of class Molecule()."""
+        self.molecule_formular = self.get_molecule_formular()
+        self.molecule_elements = self.extract_elements(self.molecule_formular)
         self.molecule_mass = self.calc_molecule_weight(self.molecule_elements)
 
-    def extract_elements(self, molecule_string: str) -> Dict:
+    def get_molecule_formular(self) -> str:
+        """Ask user for molecule formular.
+
+        Returns
+        -------
+        str
+            Representation of the searched molecular formular.
+        """
+        return input('Please enter molecular formular of the molecule: ')
+
+    def extract_elements(self, molecule_formular: str) -> Dict:
         """Extracting elements symbol and frequency out of molecular formular.
 
         Parameters
@@ -66,24 +91,12 @@ class Molecule():
         -------
         dict of {str : str}
             Items consist of element symbol and the frequency of the element.
-
-        Examples
-        --------
-        >>> a = 'H2O'
-        >>> test_mol_a = Molecule(a)
-        >>> test_mol_a.extract_elements(a)
-        {'H': '2', 'O': '1'}
-
-        >>> b = 'H2SO4'
-        >>> test_mol_b = Molecule(b)
-        >>> test_mol_b.extract_elements(b)
-        {'H': '2', 'S': 1, 'O': '4'}
         """
         # Can be pack into a dictcomprehension, but less readability
         molecule_elements = {}
         # Split the string at each upper letter
-        splitted_string = re.sub(r"([A-Z])", r" \1", molecule_string).strip().split()
-        for unit in splitted_string:
+        split_string = re.sub(r"([A-Z])", r" \1", molecule_formular).strip().split()
+        for unit in split_string:
             if unit.isalpha():
                 molecule_elements.update({unit: '1'})
             else:
@@ -107,17 +120,6 @@ class Molecule():
         float
             Weight of the molecule with the unit g/mol.
         --------
-        >>> a = 'H2O'
-        >>> a_dict = {'H': '2', 'O': '1'}
-        >>> test_mol_a = Molecule(a)
-        >>> test_mol_a.calc_molecule_weight(a)
-        18.01528
-
-        >>> b = 'H2O'
-        >>> b_dict = {'H': '2', 'S': 1 'O': '4'}
-        >>> test_mol_b = Molecule(b)
-        >>> test_mol_b.calc_molecule_weight(b)
-        98.07848
         """
         molecule_mass = 0
         try:
@@ -164,35 +166,33 @@ PERIODICTABLE = read_periodictable()
 
 
 def main():
-    looping = True
     history = []
-    while looping:
+    while True:
         clear_output()
-        input_molecule = input('Please enter molecular formular of the molecule: ')
-        history.append(Molecule(input_molecule))
+        history.append(Molecule())
         if history[-1].molecule_mass == 0:
-            print("The molecular formular you have enterd can't be calculated.")
+            print("The molecular formular can't be calculated.")
+            del history[-1]
         else:
-            print(f'The molecule mass of {history[-1].molecule_string} is: '
+            print(f'The molecule mass of {history[-1].molecule_formular} is: '
                   f'{history[-1].molecule_mass} g/mol')
         print()
         decision = input('Calculate another moleule mass (y/n) '
                          'or look at history (h)? ')
-        print()
         if decision == 'n':
-            looping = False
-            print('Have a nice day!')
+            break
         elif decision == 'h':
             clear_output()
             print('History:')
             print()
             for molecule in history:
-                print(f'{molecule.molecule_string} = {molecule.molecule_mass} g/mol')
+                print(f'{molecule.molecule_formular} = '
+                      f'{molecule.molecule_mass} g/mol')
             print()
             if input('Calculate another molecule mass (y/n): ') == 'n':
-                looping = False
-                print()
-                print('Have a nice day!')
+                break
+    print()
+    print('Have a nice day!')
 
 
 if __name__ == '__main__':
