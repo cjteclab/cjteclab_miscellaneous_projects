@@ -29,7 +29,7 @@ In the *lower section,* you get the results of the calculations.
 ### Design Choices
 **GUI vs. CommandLine**: Because of the usage for people with no programming background I decided to use a user interface instead of a command line for interaction. Additionally, the user interface is easier to use for fast and simple matrix calculations.
 
-**GUI Framework**: Python has a lot of different GUI frameworks. I decided to use Tkinter because Tkinter is the only framework that’s built into the Python standard library and it is cross-platform so the same code works on Windows, macOS, and Linux. Further, I personally prefer lightweight and simple frameworks.
+**GUI Framework**: Python has a lot of different GUI frameworks. I decided to use Tkinter because Tkinter is the only framework that’s built into the Python standard library and it is cross-platform so the same code works on Windows, macOS, and Linux. Further, I prefer lightweight and simple frameworks.
 
 **Library for calculations**: There are different python libraries to calculate single matrix properties and linked matrices operations. For example numpy, scipy or sympy. After several tries, I decided to use sympy, because the function's outputs are prettier to print in the Tkinter text field.
 
