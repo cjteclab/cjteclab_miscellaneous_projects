@@ -10,14 +10,14 @@ class VocabularyApp(tk.Tk):
         # Instead of choose MainPage() as self.frame we use None because the
         # correct frame is choosen by the following function call
         self.frame = None
-        self.switch_frame(MainPage)
+        self.show(Menu)
 
     def set_basic_app_infos(self):
         self.title("CJ\'s Vocabulary Trainer")
         self.geometry('400x400')
         self.resizable(False, False)
 
-    def set_frame(self, targetframe):
+    def show(self, targetframe):
         new_frame = targetframe(self)
         if self.frame is not None:
             self.frame.destroy()
@@ -25,7 +25,7 @@ class VocabularyApp(tk.Tk):
         self.frame.pack()
 
 
-class MainPage(tk.Frame):
+class Menu(tk.Frame):
     def __init__(self, parent):
         super().__init__(parent)
         self.add_widgets()
@@ -33,19 +33,19 @@ class MainPage(tk.Frame):
     def add_widgets(self):
         # Button for Training Session
         self.B_Training = tk.Button(self, text='Start Training Session',
-                                    command=lambda: root.sf(Training))
+                                    command=lambda: root.show(Training))
         self.B_Training.pack()
         # Button for Adding Vocabularies
         self.B_Add = tk.Button(self, text='Adding Vocabularies',
-                               command=lambda: root.sf(Add_Vocabularies))
+                               command=lambda: root.show(Add_Vocabularies))
         self.B_Add.pack()
         # Button for Session History
         self.B_History = tk.Button(self, text='View Session History',
-                                   command=lambda: root.sf(SessionHistory))
+                                   command=lambda: root.show(SessionHistory))
         self.B_History.pack()
         # Button for StatisticPage
         self.B_Stats = tk.Button(self, text='View Statistics',
-                                 command=lambda: root.sf(StatsPage))
+                                 command=lambda: root.show(StatsPage))
         self.B_Stats.pack()
         # Button for Exit
         self.B_Exit = tk.Button(self, text='Exit',
@@ -53,7 +53,7 @@ class MainPage(tk.Frame):
         self.B_Exit.pack()
 
 
-class Training():
+class Training(tk.Frame):
     def __init__(self, parent):
         super().__init__(parent)
         self.add_variables()
@@ -72,7 +72,7 @@ class Training():
                                        selectmode='multiple', heigh=5)
         self.box_lectures.grid(column=0, row=1, sticky='nswe')
         self.scrollbar = tk.Scrollbar(self, orient='vertical',
-                                      command=self.listbox_lectures.yview)
+                                      command=self.box_lectures.yview)
         self.scrollbar.grid(column=1, row=1, sticky='ns')
         self.box_lectures['yscrollcommand'] = self.scrollbar.set
         self.box_lectures.insert('end', *[i[1] for i in get_lectures()])
@@ -106,14 +106,14 @@ class Training():
         # Create buttons for start training and Go to MainPage
         self.start = tk.Button(self, text='Start Training',
                                command=lambda: [self.set_selection(),
-                                                root.set_frame(TrainingPage)])
+                                                root.show(TrainingPage)])
         self.start.grid(column=0, row=11)
-        self.go_back = tk.Button(self, text='Main Page',
-                                 command=lambda: root.set_frame(MainPage))
+        self.go_back = tk.Button(self, text='Return to Main Page',
+                                 command=lambda: root.show(Menu))
         self.go_back.grid(column=0, row=12)
 
     def add_bindings(self):
-        self.listbox_lectures.bind('<<ListboxSelect>>', self.change_selection)
+        self.box_lectures.bind('<<ListboxSelect>>', self.change_selection)
 
     def change_selection(self, event):
         self.wordcount['text'] = get_w_count([self.box_lectures.get(i)
@@ -123,8 +123,8 @@ class Training():
 
     def set_selection(self):
         global training_lectures
-        training_lectures = [self.listbox_lectures.get(
-            i) for i in self.listbox_lectures.curselection()]
+        training_lectures = [self.box_lectures.get(
+            i) for i in self.box_lectures.curselection()]
         global training_percentage
         training_percentage = self.var_percentage
         global training_order
@@ -205,7 +205,7 @@ class Add_Vocabularies():
         self.label.pack()
 
         self.goback = tk.Button(self, text='Back to Main Page',
-                                command=lambda: root.set_frame(MainPage))
+                                command=lambda: root.show(Menu))
         self.goback.pack()
 
 
@@ -223,7 +223,7 @@ class StatsPage():
         self.label.pack()
 
         self.goback = tk.Button(self, text='Back to Main Page',
-                                command=lambda: root.set_frame(MainPage))
+                                command=lambda: root.show(Menu))
         self.goback.pack()
 
 
@@ -242,7 +242,7 @@ def get_w_count(lectures, percentage):
     con = sqlite3.connect('vocabulary.db')
     for lecture in lectures:
         cur = con.cursor()
-        cur.execute("""SELECT COUNT(*) FROM words 
+        cur.execute("""SELECT COUNT(*) FROM words
                     WHERE lecture_id = (SELECT lecture_id FROM lectures
                     WHERE lecture_name = ?) AND percentage <= ?;""",
                     (lecture, percentage))
@@ -258,7 +258,7 @@ def get_vocabulary_list(lectures, percentage, order):
     cur = con.cursor()
     # to include: AND percentage <=? --- percentage
     for item in lectures:
-        cur.execute("""SELECT * FROM words 
+        cur.execute("""SELECT * FROM words
                     WHERE lecture_id = (SELECT lecture_id FROM lectures
                     WHERE lecture_name = ?);""", (item,))
         lecture_box.append(cur.fetchall())
