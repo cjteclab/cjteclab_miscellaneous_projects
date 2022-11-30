@@ -62,12 +62,12 @@ class TrainingSession(tk.Frame):
         self.label_wordcount = tk.Label(self)
         self.label_wordcount.grid(column=0, row=10)
         # Create buttons for start training and Go to MainPage
-        self.goto_TrainingPage = tk.Button(self, text='Start Training',
-                                           command=lambda: [self.set_selection(),
-                                                            root.switch_frame(TrainingPage)])
-        self.goto_TrainingPage.grid(column=0, row=11)
+        self.button_StartTraining = tk.Button(self, text='Start Training',
+                                              command=lambda: [self.set_selection(),
+                                                               main.VocabularyApp.switch_frame(root, main.MainPage)])
+        self.button_StartTraining.grid(column=0, row=11)
         self.goto_MainPage = tk.Button(self, text='Go back to Main Page',
-                                       command=lambda: main.root.switch_frame(main.MainPage))
+                                       command=lambda: main.VocabularyApp.switch_frame(root, main.MainPage))
         self.goto_MainPage.grid(column=0, row=12)
 
     def add_bindings(self):
