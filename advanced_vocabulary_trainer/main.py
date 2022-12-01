@@ -1,6 +1,7 @@
 import tkinter as tk
 import sqlite3
 import random
+import menu
 
 
 class VocabularyApp(tk.Tk):
@@ -10,7 +11,7 @@ class VocabularyApp(tk.Tk):
         # Instead of choose MainPage() as self.frame we use None because the
         # correct frame is choosen by the following function call
         self.frame = None
-        self.show(Menu)
+        self.show(menu.Menu)
 
     def set_basic_app_infos(self):
         self.title("CJ\'s Vocabulary Trainer")
@@ -23,34 +24,6 @@ class VocabularyApp(tk.Tk):
             self.frame.destroy()
         self.frame = new_frame
         self.frame.pack()
-
-
-class Menu(tk.Frame):
-    def __init__(self, parent):
-        super().__init__(parent)
-        self.add_widgets()
-
-    def add_widgets(self):
-        # Button for Training Session
-        self.B_Training = tk.Button(self, text='Start Training Session',
-                                    command=lambda: root.show(TrainingSelect))
-        self.B_Training.pack()
-        # Button for Adding Vocabularies
-        self.B_Add = tk.Button(self, text='Adding Vocabularies',
-                               command=lambda: root.show(Add_Vocabularies))
-        self.B_Add.pack()
-        # Button for Session History
-        self.B_History = tk.Button(self, text='View Session History',
-                                   command=lambda: root.show(SessionHistory))
-        self.B_History.pack()
-        # Button for StatisticPage
-        self.B_Stats = tk.Button(self, text='View Statistics',
-                                 command=lambda: root.show(StatsPage))
-        self.B_Stats.pack()
-        # Button for Exit
-        self.B_Exit = tk.Button(self, text='Exit',
-                                command=lambda: root.destroy())
-        self.B_Exit.pack()
 
 
 class TrainingSelect(tk.Frame):
@@ -207,7 +180,7 @@ class WordFrame(tk.Frame):
         self.var_frame_pass.set(1)
 
 
-class Add_Vocabularies():
+class AddVocabularies():
     def __init__(self, parent):
         super().__init__(parent)
         self.add_widgets()
@@ -217,7 +190,7 @@ class Add_Vocabularies():
         self.label.pack()
 
         self.goback = tk.Button(self, text='Back to Main Page',
-                                command=lambda: root.show(Menu))
+                                command=lambda: root.show(menu.Menu))
         self.goback.pack()
 
 
@@ -235,7 +208,7 @@ class StatsPage():
         self.label.pack()
 
         self.goback = tk.Button(self, text='Back to Main Page',
-                                command=lambda: root.show(Menu))
+                                command=lambda: root.show(menu.Menu))
         self.goback.pack()
 
 
