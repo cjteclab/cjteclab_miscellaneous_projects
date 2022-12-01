@@ -33,7 +33,7 @@ class Menu(tk.Frame):
     def add_widgets(self):
         # Button for Training Session
         self.B_Training = tk.Button(self, text='Start Training Session',
-                                    command=lambda: root.show(Training))
+                                    command=lambda: root.show(TrainingSelect))
         self.B_Training.pack()
         # Button for Adding Vocabularies
         self.B_Add = tk.Button(self, text='Adding Vocabularies',
@@ -53,7 +53,7 @@ class Menu(tk.Frame):
         self.B_Exit.pack()
 
 
-class Training(tk.Frame):
+class TrainingSelect(tk.Frame):
     def __init__(self, parent):
         super().__init__(parent)
         self.add_variables()
@@ -61,56 +61,68 @@ class Training(tk.Frame):
         self.add_bindings()
 
     def add_variables(self):
+        # Create variable for Radiobuttons
         self.var_percentage = tk.DoubleVar(value=1.0)
-        self.var_order = tk.IntVar(value=0)
+        # Create variable for Checkbutton
+        self.var_querymode = tk.IntVar(value=0)
 
     def add_widgets(self):
-        # Create a Listbox with Scrollbar
-        self.selectlectures = tk.Label(self, text='Select your lectures')
-        self.selectlectures.grid(column=0, row=0)
+        # Create Label for headline
+        self.label_headline = tk.Label(self)
+        self.label_headline['text'] = 'Please choose your training:'
+        self.label_headline.grid(column=0, row=0)
+        # Create a Listbox with Scrollbar for lecture selection
         self.box_lectures = tk.Listbox(self, exportselection=0,
-                                       selectmode='multiple', heigh=5)
+                                       selectmode='multiple', heigh=10)
         self.box_lectures.grid(column=0, row=1, sticky='nswe')
-        self.scrollbar = tk.Scrollbar(self, orient='vertical',
-                                      command=self.box_lectures.yview)
-        self.scrollbar.grid(column=1, row=1, sticky='ns')
-        self.box_lectures['yscrollcommand'] = self.scrollbar.set
+        self.box_scrollbar = tk.Scrollbar(self, orient='vertical',
+                                          command=self.box_lectures.yview)
+        self.box_scrollbar.grid(column=1, row=1, sticky='ns')
+        self.box_lectures['yscrollcommand'] = self.box_scrollbar.set
         self.box_lectures.insert('end', *[i[1] for i in get_lectures()])
-        # Create Radiobuttons for select percentage
-        self.wordselection = tk.Label(self, text='Select words:')
-        self.wordselection.grid(column=0, row=2)
+        # Create Radiobuttons for word selection
+        self.label_words = tk.Label(self)
+        self.label_words['text'] = 'Word selection:'
+        self.label_words.grid(column=0, row=2)
         self.all = tk.Radiobutton(self, text='All words',
-                                  variable=self.var_percentage, value=1.0)
+                                  variable=self.var_percentage, value=1.0,
+                                  command=lambda: self.change_selection(None))
         self.all.grid(column=0, row=3)
-        self.below90 = tk.Radiobutton(self, text='All words below 90%',
-                                      variable=self.var_percentage, value=0.9)
-        self.below90.grid(column=0, row=4)
-        self.below75 = tk.Radiobutton(self, text='All words below 75%',
-                                      variable=self.var_percentage, value=0.75)
-        self.below75.grid(column=0, row=5)
-        self.below50 = tk.Radiobutton(self, text='All words below 50%',
-                                      variable=self.var_percentage, value=0.5)
-        self.below50.grid(column=0, row=6)
-        # Create Radiobuttons for select order
-        self.selectorder = tk.Label(self, text='Select order:')
-        self.selectorder.grid(column=0, row=7)
-        self.sortedorder = tk.Radiobutton(self, text='Sorted Order',
-                                          variable=self.var_order, value=0)
-        self.sortedorder.grid(column=0, row=8)
-        self.randomorder = tk.Radiobutton(self, text='Random Order',
-                                          variable=self.var_order, value=1)
-        self.randomorder.grid(column=0, row=9)
-        # Create Label for wordcount
+        self.l90 = tk.Radiobutton(self, text='Words below 90% accuracy',
+                                  variable=self.var_percentage, value=0.9,
+                                  command=lambda: self.change_selection(None))
+        self.l90.grid(column=0, row=4)
+        self.l75 = tk.Radiobutton(self, text='Words below 75% accuracy',
+                                  variable=self.var_percentage, value=0.75,
+                                  command=lambda: self.change_selection(None))
+        self.l75.grid(column=0, row=5)
+        self.l50 = tk.Radiobutton(self, text='Words below 50% accuracy',
+                                  variable=self.var_percentage, value=0.5,
+                                  command=lambda: self.change_selection(None))
+        self.l50.grid(column=0, row=6)
+        # Create Frame for showing selected words
+        # !Must be updated every time user change selection in Listbox or Scale
         self.wordcount = tk.Label(self)
-        self.wordcount.grid(column=0, row=10)
-        # Create buttons for start training and Go to MainPage
+        self.wordcount.grid(column=0, row=7)
+        # Create Checkbutton for query mode
+        self.selectorder = tk.Label(self, text='Select order:')
+        self.selectorder.grid(column=0, row=8)
+        self.sortedorder = tk.Radiobutton(self, text='Sorted Order',
+                                          variable=self.var_querymode, value=0)
+        self.sortedorder.grid(column=0, row=9)
+        self.randomorder = tk.Radiobutton(self, text='Random Order',
+                                          variable=self.var_querymode, value=1)
+        self.randomorder.grid(column=0, row=10)
+        # Create Button to start training
         self.start = tk.Button(self, text='Start Training',
                                command=lambda: [self.set_selection(),
                                                 root.show(TrainingPage)])
         self.start.grid(column=0, row=11)
-        self.go_back = tk.Button(self, text='Return to Main Page',
-                                 command=lambda: root.show(Menu))
-        self.go_back.grid(column=0, row=12)
+        # !When pressing the 'Start Training' button call a Training Instance
+        # Create Button to go back to MainPage
+        self.goto_Menu = tk.Button(self, text='Return to Menu',
+                                   command=lambda: root.show(Menu))
+        self.goto_Menu.grid(column=0, row=12)
 
     def add_bindings(self):
         self.box_lectures.bind('<<ListboxSelect>>', self.change_selection)
@@ -128,7 +140,7 @@ class Training(tk.Frame):
         global training_percentage
         training_percentage = self.var_percentage
         global training_order
-        training_order = self.var_order
+        training_order = self.var_querymode
 
 
 class TrainingPage(tk.Frame):
