@@ -1,13 +1,19 @@
 import tkinter as tk
+import menu
 
 
 class Training(tk.Frame):
     def __init__(self, parent):
         self.parent = parent
-        super().__init__(parent)
+        super().__init__(self.parent)
         self.add_widgets()
 
     def add_widgets(self):
         self.label = tk.Label(self,
                               text='TrainingPage')
         self.label.pack()
+        # Create Button to go back to MainPage
+        self.goto_Menu = tk.Button(self,
+                                   text='Return to Menu',
+                                   command=lambda: self.parent.show(menu.Menu))
+        self.goto_Menu.pack()

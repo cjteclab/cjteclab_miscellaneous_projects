@@ -2,7 +2,7 @@ import tkinter as tk
 import menu
 
 
-class AddVocabularies(tk.Frame):
+class StatPage(tk.Frame):
     def __init__(self, parent):
         self.parent = parent
         super().__init__(self.parent)
@@ -10,7 +10,7 @@ class AddVocabularies(tk.Frame):
 
     def add_widgets(self):
         self.label = tk.Label(self,
-                              text='AddVocabulariesPage')
+                              text='StatisticsPage')
         self.label.pack()
         # Create Button to go back to MainPage
         self.goto_Menu = tk.Button(self,

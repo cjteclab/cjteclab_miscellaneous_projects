@@ -4,15 +4,15 @@ import menu
 import sqlite3
 
 
-class SelectTraining():
+class SelectTraining(tk.Frame):
     def __init__(self, parent):
         self.parent = parent
-        super().__init__(parent)
+        super().__init__(self.parent)
         self.add_variables()
         self.add_widgets()
         self.add_bindings()
 
-    def add_varibles(self):
+    def add_variables(self):
         # Create variable for words selection Radiobutton
         self.var_wordselect = tk.DoubleVar(value=1.0)
         # Create variable for query mode Radiobutton
@@ -55,7 +55,7 @@ class SelectTraining():
                          ['Words below 50% accuracy', 0.5],
                          ['Worfs below 25% accuracy', 0.25]]
         for num, info in enumerate(words_buttons):
-            self.num = tk.Radiobutton(self,
+            self.num = tk.Radiobutton(self.frame_words,
                                       text=info[0],
                                       variable=self.var_wordselect,
                                       value=info[1],
@@ -84,10 +84,11 @@ class SelectTraining():
         query_mode = [['Ordered query', 0],
                       ['Random query', 1]]
         for num, info in enumerate(query_mode):
-            self.num = tk.Radiobutton(self,
+            self.num = tk.Radiobutton(self.frame_querymode,
                                       text=info[0],
                                       variable=self.var_querymode,
                                       value=info[1])
+            self.num.pack()
         # Create Frame for navigation buttons
         self.frame_navi = tk.LabelFrame(self)
         self.frame_navi.grid(row=3,
@@ -96,14 +97,14 @@ class SelectTraining():
                              padx=5,
                              pady=5)
         # Create Buttons for navigation
-        self.start = tk.Button(self,
+        self.start = tk.Button(self.frame_navi,
                                text='Start Training',
                                command=lambda: [self.set_selection(),
                                                 self.parent.show(training.Training)])
         self.start.pack()
         # !When pressing the 'Start Training' button call a Training Instance
         # Create Button to go back to MainPage
-        self.goto_Menu = tk.Button(self,
+        self.goto_Menu = tk.Button(self.frame_navi,
                                    text='Return to Menu',
                                    command=lambda: self.parent.show(menu.Menu))
         self.goto_Menu.pack()
