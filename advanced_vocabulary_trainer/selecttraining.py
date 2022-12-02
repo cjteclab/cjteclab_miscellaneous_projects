@@ -29,9 +29,11 @@ class SelectTraining(tk.Frame):
                                 padx=5,
                                 pady=5)
         # Create lecture Listbox
+        # TODO Add padding to listbox
         self.box_lectures = tk.Listbox(self.frame_lecture,
                                        exportselection=0,
                                        selectmode='multiple',
+                                       width=35,
                                        heigh=10)
         self.box_lectures.grid(column=0,
                                row=1,
