@@ -1,4 +1,5 @@
 import tkinter as tk
+from tkinter import ttk
 import menu
 from typing import List
 import sqlite3
@@ -14,9 +15,33 @@ class Training(tk.Frame):
         self.add_widgets()
 
     def add_widgets(self):
-        self.label = tk.Label(self,
-                              text='TrainingPage')
+        # Create Frame for Session Informations
+        self.frame_navi = tk.LabelFrame(self)
+        self.frame_navi.grid(row=3,
+                             column=0,
+                             columnspan=2,
+                             padx=5,
+                             pady=5)
+        # Create widgets for Session Informations
+        self.label = tk.Label(self.frame_navi,
+                              text='Training Session')
         self.label.pack()
+        self.progressbar = ttk.Progressbar(self.frame_navi,
+                                           orient='horizintal',
+                                           length=200,
+                                           mode='determinate')
+        self.progressbar.pack()
+        # TODO Create for loop by word_ids from session instance and create WordFrame
+        for id in 
+        
+        
+        for item in self.session:
+            self.wordframe = WordFrame(self, item)
+            self.wordframe.destroy()
+        self.label_finish = tk.Label(self, text='Training finished')
+        self.label_finish.pack()
+        
+        
         # Create Button to go back to MainPage
         self.goto_Menu = tk.Button(self,
                                    text='Return to Menu',
@@ -33,33 +58,28 @@ class TrainingSession():
         self.lectures = lectures
         self.words = words
         self.mode = mode
-        self.session = self.load_session(self.lectures,
-                                         self.words,
-                                         self.mode)
-        for item in self.session:
-            self.wordframe = WordFrame(self, item)
-            self.wordframe.destroy()
-        self.label_finish = tk.Label(self, text='Training finished')
-        self.label_finish.pack()
+        self.word_ids = self.load_word_ids(self.lectures,
+                                           self.words,
+                                           self.mode)
+        self.word_count = len(self.word_ids)
+        
 
-    def load_session(self, lectures: List, words: float, mode: int) -> List:
-        session_container = []
+    def load_word_ids(self, lectures: List, words: float, mode: int) -> List:
+        word_ids_session = []
         con = sqlite3.connect('vocabulary.db')
+        con.row_factory = lambda cursor, row: row[0]
         cur = con.cursor()
-        # to include: AND percentage <=? --- percentage
-        for item in lectures:
-            cur.execute("""SELECT * FROM words
-            WHERE lecture_id = (SELECT lecture_id FROM lectures
-            WHERE lecture_name = ?);""", (item,))
-            session_container.append(cur.fetchall())
+        for lecture in lectures:
+            cur.execute("""SELECT word_id FROM words
+                        WHERE lecture_id = (SELECT lecture_id FROM lectures
+                        WHERE lecture_name = ?) AND percentage <= ?;""",
+                        (lecture, words))
+            word_ids_session += cur.fetchall()
         cur.close()
         con.close()
-        vocabulary_list = [item
-                           for sublist in session_container
-                           for item in sublist]
         if mode == 1:
-            random.shuffle(vocabulary_list)
-        return session_container
+            random.shuffle(word_ids_session)
+        return word_ids_session
 
     def query_session(self, session_words: dict, mode: int):
         pass
