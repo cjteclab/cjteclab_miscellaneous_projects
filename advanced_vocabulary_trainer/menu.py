@@ -3,6 +3,7 @@ import history
 import addvocabularies
 import selecttraining
 import statpage
+from functools import partial
 
 
 class Menu(tk.Frame):
@@ -22,10 +23,11 @@ class Menu(tk.Frame):
             # Using i=i trick
             self.button.append(tk.Button(self,
                                          text=info[0],
-                                         command=lambda i=info[1]: self.parent.show(i)))
+                                         command=partial(self.parent.show,
+                                                         info[1])))
             self.button[num].pack()
         # Button for Exit
         self.B_Exit = tk.Button(self,
                                 text='Exit',
-                                command=lambda: self.parent.destroy())
+                                command=self.parent.destroy)
         self.B_Exit.pack()

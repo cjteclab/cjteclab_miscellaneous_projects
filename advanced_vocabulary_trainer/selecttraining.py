@@ -2,6 +2,7 @@ import tkinter as tk
 import training
 import menu
 import sqlite3
+from functools import partial
 
 
 class SelectTraining(tk.Frame):
@@ -20,7 +21,8 @@ class SelectTraining(tk.Frame):
 
     def add_widgets(self):
         # Create Frame for lecture Listbox
-        self.frame_lecture = tk.LabelFrame(self, text='Lecture Selection')
+        self.frame_lecture = tk.LabelFrame(self,
+                                           text='Lecture Selection')
         self.frame_lecture.grid(row=0,
                                 column=0,
                                 columnspan=2,
@@ -43,7 +45,8 @@ class SelectTraining(tk.Frame):
         self.box_lectures['yscrollcommand'] = self.box_scrollbar.set
         self.box_lectures.insert('end', *[i[1] for i in get_lectures()])
         # Create Frame for words Radiobuttons
-        self.frame_words = tk.LabelFrame(self, text='Word Selection')
+        self.frame_words = tk.LabelFrame(self,
+                                         text='Word Selection')
         self.frame_words.grid(row=1,
                               column=0,
                               columnspan=2,
@@ -59,7 +62,8 @@ class SelectTraining(tk.Frame):
                                       text=info[0],
                                       variable=self.var_wordselect,
                                       value=info[1],
-                                      command=lambda: self.change_selection(None))
+                                      command=partial(self.change_selection,
+                                                      None))
             self.num.pack()
         # Create Frame for selected words Label
         self.frame_showcount = tk.LabelFrame(self,
@@ -99,14 +103,16 @@ class SelectTraining(tk.Frame):
         # Create Buttons for navigation
         self.start = tk.Button(self.frame_navi,
                                text='Start Training',
-                               command=lambda: [self.set_selection(),
-                                                self.parent.show(training.Training)])
+                               # ! Append command with self.set_selection
+                               command=[partial(self.parent.show,
+                                                training.Training)])
         self.start.pack()
         # !When pressing the 'Start Training' button call a Training Instance
         # Create Button to go back to MainPage
         self.goto_Menu = tk.Button(self.frame_navi,
                                    text='Return to Menu',
-                                   command=lambda: self.parent.show(menu.Menu))
+                                   command=partial(self.parent.show,
+                                                   menu.Menu))
         self.goto_Menu.pack()
 
     def add_bindings(self):

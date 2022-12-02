@@ -1,5 +1,6 @@
 import tkinter as tk
 import menu
+from functools import partial
 
 
 class AddVocabularies(tk.Frame):
@@ -15,5 +16,6 @@ class AddVocabularies(tk.Frame):
         # Create Button to go back to MainPage
         self.goto_Menu = tk.Button(self,
                                    text='Return to Menu',
-                                   command=lambda: self.parent.show(menu.Menu))
+                                   command=partial(self.parent.show,
+                                                   menu.Menu))
         self.goto_Menu.pack()
