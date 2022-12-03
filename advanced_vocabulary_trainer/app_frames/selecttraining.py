@@ -2,6 +2,8 @@ import tkinter as tk
 import sqlite3
 from functools import partial
 from app_frames import training, menu
+import os
+import configuration
 
 
 class SelectTraining(tk.Frame):
@@ -127,7 +129,7 @@ class SelectTraining(tk.Frame):
 
 
 def get_lectures():
-    con = sqlite3.connect('../vocabulary.db')
+    con = sqlite3.connect(configuration.database)
     cur = con.cursor()
     cur.execute("""SELECT * FROM lectures;""")
     lectures = cur.fetchall()
@@ -138,7 +140,7 @@ def get_lectures():
 
 def get_w_count(lectures, percentage):
     wordcount = 0
-    con = sqlite3.connect('../vocabulary.db')
+    con = sqlite3.connect(configuration.database)
     for lecture in lectures:
         cur = con.cursor()
         cur.execute("""SELECT COUNT(*) FROM words

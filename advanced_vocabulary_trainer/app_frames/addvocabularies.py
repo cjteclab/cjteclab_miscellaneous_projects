@@ -1,6 +1,6 @@
 import tkinter as tk
-import projects.cjteclab_miscellaneous_projects.advanced_vocabulary_trainer.app_frames.menu as menu
 from functools import partial
+from app_frames import menu
 
 
 class AddVocabularies(tk.Frame):

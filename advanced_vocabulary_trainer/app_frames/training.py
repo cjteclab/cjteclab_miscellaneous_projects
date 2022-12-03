@@ -4,6 +4,8 @@ from typing import List
 import sqlite3
 import random
 from app_frames import menu
+import os
+import configuration
 
 # TODO Structure code and recode classes
 
@@ -32,7 +34,6 @@ class Training(tk.Frame):
                                            mode='determinate')
         self.progressbar.pack()
         # TODO Create for loop by word_ids from session instance and create WordFrame
-        for id in 
         
         
         for item in self.session:
@@ -66,7 +67,7 @@ class TrainingSession():
 
     def load_word_ids(self, lectures: List, words: float, mode: int) -> List:
         word_ids_session = []
-        con = sqlite3.connect('../vocabulary.db')
+        con = sqlite3.connect(configuration.database)
         con.row_factory = lambda cursor, row: row[0]
         cur = con.cursor()
         for lecture in lectures:

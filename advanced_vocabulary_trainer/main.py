@@ -1,5 +1,6 @@
 import tkinter as tk
 from app_frames import menu
+import os.path
 
 
 class VocabularyApp(tk.Tk):
