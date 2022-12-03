@@ -21,7 +21,7 @@ class VocabularyApp(tk.Tk):
         super().__init__()
         self.set_basic_app_infos()
         # Instead of choose MainPage() as self.frame we use None because the
-        # correct frame is choosen by the following function call
+        # correct frame is choosen by the following function call.
         self.frame = None
         self.show(menu.Menu)
 

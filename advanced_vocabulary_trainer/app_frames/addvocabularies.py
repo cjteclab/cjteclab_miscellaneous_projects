@@ -14,7 +14,7 @@ class AddVocabularies(tk.Frame):
         self.label = tk.Label(self,
                               text='AddVocabulariesPage')
         self.label.pack()
-        # Create Button to go back to MainPage
+        # Create a Button to go back to MainPage.
         self.goto_Menu = tk.Button(self,
                                    text='Return to Menu',
                                    command=partial(self.parent.show,

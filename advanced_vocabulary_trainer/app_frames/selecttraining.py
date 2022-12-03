@@ -16,13 +16,13 @@ class SelectTraining(tk.Frame):
         self.add_bindings()
 
     def add_variables(self):
-        # Create variable for words selection Radiobutton
+        # Create a variable for words selection Radiobutton.
         self.var_wordselect = tk.DoubleVar(value=1.0)
-        # Create variable for query mode Radiobutton
+        # Create a variable for query mode Radiobutton.
         self.var_querymode = tk.IntVar(value=0)
 
     def add_widgets(self):
-        # Create Frame for lecture Listbox
+        # Create a Frame for lecture Listbox.
         self.frame_lecture = tk.LabelFrame(self,
                                            text='Lecture Selection')
         self.frame_lecture.grid(row=0,
@@ -30,7 +30,7 @@ class SelectTraining(tk.Frame):
                                 columnspan=2,
                                 padx=5,
                                 pady=5)
-        # Create lecture Listbox
+        # Create a lecture Listbox with Scrollbar.
         # TODO Add padding to listbox
         self.box_lectures = tk.Listbox(self.frame_lecture,
                                        exportselection=0,
@@ -48,7 +48,7 @@ class SelectTraining(tk.Frame):
                                 sticky='ns')
         self.box_lectures['yscrollcommand'] = self.box_scrollbar.set
         self.box_lectures.insert('end', *[i[1] for i in get_lectures()])
-        # Create Frame for words Radiobuttons
+        # Create a Frame for words Radiobuttons.
         self.frame_words = tk.LabelFrame(self,
                                          text='Word Selection')
         self.frame_words.grid(row=1,
@@ -56,7 +56,7 @@ class SelectTraining(tk.Frame):
                               columnspan=2,
                               padx=5,
                               pady=5)
-        # Create words Radiobuttons
+        # Create words Radiobuttons.
         words_buttons = [['All words', 1.0],
                          ['Words below 75% accuracy', 0.75],
                          ['Words below 50% accuracy', 0.5],
@@ -69,7 +69,7 @@ class SelectTraining(tk.Frame):
                                       command=partial(self.change_selection,
                                                       None))
             self.num.pack()
-        # Create Frame for selected words Label
+        # Create a Frame for selected words Label.
         self.frame_showcount = tk.LabelFrame(self,
                                              text='Number of selected words')
         self.frame_showcount.grid(row=2,
@@ -77,10 +77,10 @@ class SelectTraining(tk.Frame):
                                   columnspan=2,
                                   padx=5,
                                   pady=5)
-        # Create Label for selected word count
+        # Create a Label for selected word count.
         self.wordcount = tk.Label(self.frame_showcount)
         self.wordcount.pack()
-        # Create Frame for query mode Radiobuttons
+        # Create a Frame for query mode Radiobuttons.
         self.frame_querymode = tk.LabelFrame(self,
                                              text='Query Mode')
         self.frame_querymode.grid(row=3,
@@ -88,7 +88,7 @@ class SelectTraining(tk.Frame):
                                   columnspan=2,
                                   padx=5,
                                   pady=5)
-        # Create Radiobuttons for query mode
+        # Create Radiobuttons for query mode.
         query_mode = [['Ordered query', 0],
                       ['Random query', 1]]
         for num, info in enumerate(query_mode):
@@ -97,14 +97,14 @@ class SelectTraining(tk.Frame):
                                       variable=self.var_querymode,
                                       value=info[1])
             self.num.pack()
-        # Create Frame for navigation buttons
+        # Create a Frame for navigation buttons.
         self.frame_navi = tk.LabelFrame(self)
         self.frame_navi.grid(row=3,
                              column=0,
                              columnspan=2,
                              padx=5,
                              pady=5)
-        # Create Buttons for navigation
+        # Create Buttons for navigation.
         self.start = tk.Button(self.frame_navi,
                                text='Start Training',
                                # ! Append command with self.set_selection
@@ -112,7 +112,7 @@ class SelectTraining(tk.Frame):
                                                 training.Training)])
         self.start.pack()
         # !When pressing the 'Start Training' button call a Training Instance
-        # Create Button to go back to MainPage
+        # Create a Button to go back to MainPage.
         self.goto_Menu = tk.Button(self.frame_navi,
                                    text='Return to Menu',
                                    command=partial(self.parent.show,

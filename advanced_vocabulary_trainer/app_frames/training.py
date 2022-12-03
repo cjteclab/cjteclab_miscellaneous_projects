@@ -16,14 +16,14 @@ class Training(tk.Frame):
         self.add_widgets()
 
     def add_widgets(self):
-        # Create Frame for Session Informations
+        # Create a Frame for Session Informations.
         self.frame_navi = tk.LabelFrame(self)
         self.frame_navi.grid(row=3,
                              column=0,
                              columnspan=2,
                              padx=5,
                              pady=5)
-        # Create widgets for Session Informations
+        # Create widgets for Session Informations.
         self.label = tk.Label(self.frame_navi,
                               text='Training Session')
         self.label.pack()
@@ -42,7 +42,7 @@ class Training(tk.Frame):
         self.label_finish.pack()
         
         
-        # Create Button to go back to MainPage
+        # Create a Button to go back to MainPage.
         self.goto_Menu = tk.Button(self,
                                    text='Return to Menu',
                                    command=lambda: self.parent.show(menu.Menu))
