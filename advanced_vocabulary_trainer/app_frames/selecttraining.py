@@ -2,11 +2,12 @@ import tkinter as tk
 import sqlite3
 from functools import partial
 from app_frames import training, menu
-import os
 import configuration
+from typing import List
 
 
 class SelectTraining(tk.Frame):
+    """Create SelectTraining frame with its variables, widgets and binding."""
     def __init__(self, parent):
         self.parent = parent
         super().__init__(self.parent)
@@ -128,7 +129,14 @@ class SelectTraining(tk.Frame):
                                              self.var_wordselect.get())
 
 
-def get_lectures():
+def get_lectures() -> List:
+    """Return lectures of the database.
+
+    Returns
+    -------
+    list of str
+        A list of lectures in the database 'vocabulary.db'.
+    """
     con = sqlite3.connect(configuration.database)
     cur = con.cursor()
     cur.execute("""SELECT * FROM lectures;""")
@@ -138,7 +146,21 @@ def get_lectures():
     return lectures
 
 
-def get_w_count(lectures, percentage):
+def get_w_count(lectures: List, wordacc: float) -> int:
+    """Get the word count of the combined lessons.
+
+    Parameters
+    ----------
+    lectures : list of str
+        The lectures the user choosed for his session.
+    wordacc : float
+        The accuracy of the words the user selected.
+
+    Returns
+    -------
+    int
+        Word count of the selected options.
+    """
     wordcount = 0
     con = sqlite3.connect(configuration.database)
     for lecture in lectures:
@@ -146,7 +168,7 @@ def get_w_count(lectures, percentage):
         cur.execute("""SELECT COUNT(*) FROM words
                     WHERE lecture_id = (SELECT lecture_id FROM lectures
                     WHERE lecture_name = ?) AND percentage <= ?;""",
-                    (lecture, percentage))
+                    (lecture, wordacc))
         wordcount += cur.fetchone()[0]
         cur.close()
     con.close()

@@ -4,12 +4,14 @@ from app_frames import selecttraining, addvocabularies, history, statpage
 
 
 class Menu(tk.Frame):
+    """Create Menu frame with its widgets."""
     def __init__(self, parent):
         self.parent = parent
         super().__init__(self.parent)
         self.add_widgets()
 
     def add_widgets(self):
+        """Create and pack widgets into the menu frame."""
         # Create navigation buttons:
         nav = [['Start Training Session', selecttraining.SelectTraining],
                ['Adding Vocabularies', addvocabularies.AddVocabularies],

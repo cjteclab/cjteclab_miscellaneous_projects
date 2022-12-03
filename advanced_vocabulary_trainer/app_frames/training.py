@@ -4,7 +4,6 @@ from typing import List
 import sqlite3
 import random
 from app_frames import menu
-import os
 import configuration
 
 # TODO Structure code and recode classes
@@ -55,6 +54,7 @@ class WordFrame(tk.Frame):
 
 
 class TrainingSession():
+    
     def __init__(self, lectures: List, words: float, mode: int):
         self.lectures = lectures
         self.words = words
@@ -63,9 +63,25 @@ class TrainingSession():
                                            self.words,
                                            self.mode)
         self.word_count = len(self.word_ids)
-        
 
-    def load_word_ids(self, lectures: List, words: float, mode: int) -> List:
+    def load_word_ids(self, lectures: List, wordacc: float, mode: int) -> List:
+        """ Return all word_ids of the words to query.
+
+        Parameters
+        ----------
+        lectures : list of str
+            The lectures the user choosed for his session.
+        wordacc : {1.0, 0.75, 0.5, 0.25}
+            The accuracy of the words the user selected.
+        mode : {0, 1}
+            The query mode the user selected.
+            '0' for ordered and '1' for random query.
+
+        Returns
+        -------
+        list
+            All word_ids of the words for the selected query.
+        """
         word_ids_session = []
         con = sqlite3.connect(configuration.database)
         con.row_factory = lambda cursor, row: row[0]
@@ -74,7 +90,7 @@ class TrainingSession():
             cur.execute("""SELECT word_id FROM words
                         WHERE lecture_id = (SELECT lecture_id FROM lectures
                         WHERE lecture_name = ?) AND percentage <= ?;""",
-                        (lecture, words))
+                        (lecture, wordacc))
             word_ids_session += cur.fetchall()
         cur.close()
         con.close()

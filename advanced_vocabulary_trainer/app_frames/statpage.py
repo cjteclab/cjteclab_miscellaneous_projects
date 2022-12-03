@@ -4,6 +4,7 @@ from app_frames import menu
 
 
 class StatPage(tk.Frame):
+    """Create StatPage frame with its widgets."""
     def __init__(self, parent):
         self.parent = parent
         super().__init__(self.parent)
