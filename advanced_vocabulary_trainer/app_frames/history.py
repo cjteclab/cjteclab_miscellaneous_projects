@@ -1,9 +1,9 @@
 import tkinter as tk
-import menu
+import projects.cjteclab_miscellaneous_projects.advanced_vocabulary_trainer.app_frames.menu as menu
 from functools import partial
 
 
-class AddVocabularies(tk.Frame):
+class History(tk.Frame):
     def __init__(self, parent):
         self.parent = parent
         super().__init__(self.parent)
@@ -11,7 +11,7 @@ class AddVocabularies(tk.Frame):
 
     def add_widgets(self):
         self.label = tk.Label(self,
-                              text='AddVocabulariesPage')
+                              text='HistoryPage')
         self.label.pack()
         # Create Button to go back to MainPage
         self.goto_Menu = tk.Button(self,

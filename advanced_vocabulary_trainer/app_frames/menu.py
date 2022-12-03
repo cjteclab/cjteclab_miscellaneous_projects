@@ -1,9 +1,6 @@
 import tkinter as tk
-import history
-import addvocabularies
-import selecttraining
-import statpage
 from functools import partial
+from app_frames import selecttraining, addvocabularies, history, statpage
 
 
 class Menu(tk.Frame):

@@ -1,9 +1,9 @@
 import tkinter as tk
 from tkinter import ttk
-import menu
 from typing import List
 import sqlite3
 import random
+from app_frames import menu
 
 # TODO Structure code and recode classes
 
@@ -66,7 +66,7 @@ class TrainingSession():
 
     def load_word_ids(self, lectures: List, words: float, mode: int) -> List:
         word_ids_session = []
-        con = sqlite3.connect('vocabulary.db')
+        con = sqlite3.connect('../vocabulary.db')
         con.row_factory = lambda cursor, row: row[0]
         cur = con.cursor()
         for lecture in lectures:
