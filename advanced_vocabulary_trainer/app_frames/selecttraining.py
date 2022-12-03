@@ -120,9 +120,11 @@ class SelectTraining(tk.Frame):
         self.goto_Menu.pack()
 
     def add_bindings(self):
+        """Add bindings to the Listbox widget."""
         self.box_lectures.bind('<<ListboxSelect>>', self.change_selection)
 
     def change_selection(self, event):
+        """Change the text in the wordcount Label."""
         self.wordcount['text'] = get_w_count([self.box_lectures.get(i)
                                              for i in
                                              self.box_lectures.curselection()],
