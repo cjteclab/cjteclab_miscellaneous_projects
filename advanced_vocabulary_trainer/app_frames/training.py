@@ -34,7 +34,6 @@ class Training(tk.Frame):
         self.progressbar.pack()
         # TODO Create for loop by word_ids from session instance and create WordFrame
         
-        
         for item in self.session:
             self.wordframe = WordFrame(self, item)
             self.wordframe.destroy()
