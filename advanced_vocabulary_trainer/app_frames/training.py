@@ -82,17 +82,17 @@ class TrainingSession():
             All word_ids of the words for the selected query.
         """
         word_ids_session = []
-        con = sqlite3.connect(configuration.database)
-        con.row_factory = lambda cursor, row: row[0]
-        cur = con.cursor()
+        connect = sqlite3.connect(configuration.database)
+        connect.row_factory = lambda cursor, row: row[0]
+        cursor = connect.cursor()
         for lecture in lectures:
-            cur.execute("""SELECT word_id FROM words
-                        WHERE lecture_id = (SELECT lecture_id FROM lectures
-                        WHERE lecture_name = ?) AND percentage <= ?;""",
-                        (lecture, wordacc))
-            word_ids_session += cur.fetchall()
-        cur.close()
-        con.close()
+            cursor.execute("""SELECT word_id FROM words
+                           WHERE lecture_id = (SELECT lecture_id FROM lectures
+                           WHERE lecture_name = ?) AND percentage <= ?;""",
+                           (lecture, wordacc))
+            word_ids_session += cursor.fetchall()
+        cursor.close()
+        connect.close()
         if mode == 1:
             random.shuffle(word_ids_session)
         return word_ids_session

@@ -139,12 +139,12 @@ def get_lectures() -> List:
     list of str
         A list of lectures in the database 'vocabulary.db'.
     """
-    con = sqlite3.connect(configuration.database)
-    cur = con.cursor()
-    cur.execute("""SELECT * FROM lectures;""")
-    lectures = cur.fetchall()
-    cur.close()
-    con.close()
+    connect = sqlite3.connect(configuration.database)
+    cursor = connect.cursor()
+    cursor.execute("""SELECT * FROM lectures;""")
+    lectures = cursor.fetchall()
+    cursor.close()
+    connect.close()
     return lectures
 
 
@@ -164,14 +164,14 @@ def get_w_count(lectures: List, wordacc: float) -> int:
         Word count of the selected options.
     """
     wordcount = 0
-    con = sqlite3.connect(configuration.database)
+    connect = sqlite3.connect(configuration.database)
     for lecture in lectures:
-        cur = con.cursor()
-        cur.execute("""SELECT COUNT(*) FROM words
-                    WHERE lecture_id = (SELECT lecture_id FROM lectures
-                    WHERE lecture_name = ?) AND percentage <= ?;""",
-                    (lecture, wordacc))
-        wordcount += cur.fetchone()[0]
-        cur.close()
-    con.close()
+        cursor = connect.cursor()
+        cursor.execute("""SELECT COUNT(*) FROM words
+                       WHERE lecture_id = (SELECT lecture_id FROM lectures
+                       WHERE lecture_name = ?) AND percentage <= ?;""",
+                       (lecture, wordacc))
+        wordcount += cursor.fetchone()[0]
+        cursor.close()
+    connect.close()
     return wordcount
