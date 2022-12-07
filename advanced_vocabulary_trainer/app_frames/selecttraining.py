@@ -108,10 +108,11 @@ class SelectTraining(tk.Frame):
         self.start = tk.Button(self.frame_navi,
                                text='Start Training',
                                # ! Append command with self.set_selection
-                               command=[partial(self.parent.show,
+                               command=[partial(create_session, XXX), partial(self.parent.show,
                                                 training.Training)])
         self.start.pack()
-        # !When pressing the 'Start Training' button call a Training Instance
+        # ! When pressing the 'Start Training' button call a Training Instance
+        # ! with the name 'current_session'
         # Create a Button to go back to MainPage.
         self.goto_Menu = tk.Button(self.frame_navi,
                                    text='Return to Menu',
@@ -175,3 +176,7 @@ def get_w_count(lectures: List, wordacc: float) -> int:
         cursor.close()
     connect.close()
     return wordcount
+
+
+def create_session(lectures: List, wordacc: float, mode: int):
+    current_session = training.TrainingSession(lectures, wordacc, mode)

@@ -3,7 +3,7 @@ from tkinter import ttk
 from typing import List
 import sqlite3
 import random
-from app_frames import menu
+from app_frames import menu, selecttraining
 import configuration
 
 # TODO Structure code and recode classes
@@ -33,8 +33,8 @@ class Training(tk.Frame):
                                            mode='determinate')
         self.progressbar.pack()
         # TODO Create for loop by word_ids from session instance and create WordFrame
-        
-        for item in self.session:
+        # Create wordframes in a for loop
+        for item in current_session.word_ids:
             self.wordframe = WordFrame(self, item)
             self.wordframe.destroy()
         self.label_finish = tk.Label(self, text='Training finished')
@@ -53,17 +53,23 @@ class WordFrame(tk.Frame):
 
 
 class TrainingSession():
-    
-    def __init__(self, lectures: List, words: float, mode: int):
+
+    def __init__(self,
+                 lectures: List,
+                 word_accuracy: float,
+                 mode: int):
         self.lectures = lectures
-        self.words = words
+        self.word_accuracy = word_accuracy
         self.mode = mode
         self.word_ids = self.load_word_ids(self.lectures,
-                                           self.words,
+                                           self.word_accuracy,
                                            self.mode)
         self.word_count = len(self.word_ids)
 
-    def load_word_ids(self, lectures: List, wordacc: float, mode: int) -> List:
+    def load_word_ids(self,
+                      lectures: List,
+                      word_accuracy: float,
+                      mode: int) -> List:
         """ Return all word_ids of the words to query.
 
         Parameters
@@ -89,7 +95,7 @@ class TrainingSession():
             cursor.execute("""SELECT word_id FROM words
                            WHERE lecture_id = (SELECT lecture_id FROM lectures
                            WHERE lecture_name = ?) AND percentage <= ?;""",
-                           (lecture, wordacc))
+                           (lecture, word_accuracy))
             word_ids_session += cursor.fetchall()
         cursor.close()
         connect.close()
