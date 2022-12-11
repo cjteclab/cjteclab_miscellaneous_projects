@@ -2,8 +2,7 @@ import tkinter as tk
 import sqlite3
 from functools import partial
 from app_frames import training, menu
-import configuration
-from typing import List
+from app_modules.session import Session as session
 
 
 class SelectTraining(tk.Frame):
@@ -47,7 +46,8 @@ class SelectTraining(tk.Frame):
                                 row=1,
                                 sticky='ns')
         self.box_lectures['yscrollcommand'] = self.box_scrollbar.set
-        self.box_lectures.insert('end', *[i[1] for i in get_lectures()])
+        self.box_lectures.insert('end',
+                                 *[i[1] for i in session.get_lectures()])
         # Create a Frame for words Radiobuttons.
         self.frame_words = tk.LabelFrame(self,
                                          text='Word Selection')
@@ -108,8 +108,8 @@ class SelectTraining(tk.Frame):
         self.start = tk.Button(self.frame_navi,
                                text='Start Training',
                                # ! Append command with self.set_selection
-                               command=[partial(create_session, XXX), partial(self.parent.show,
-                                                training.Training)])
+                               command=partial(self.parent.show,
+                                               training.Training))
         self.start.pack()
         # ! When pressing the 'Start Training' button call a Training Instance
         # ! with the name 'current_session'
@@ -126,57 +126,7 @@ class SelectTraining(tk.Frame):
 
     def change_selection(self, event):
         """Change the text in the wordcount Label."""
-        self.wordcount['text'] = get_w_count([self.box_lectures.get(i)
-                                             for i in
-                                             self.box_lectures.curselection()],
-                                             self.var_wordselect.get())
-
-
-def get_lectures() -> List:
-    """Return lectures of the database.
-
-    Returns
-    -------
-    list of str
-        A list of lectures in the database 'vocabulary.db'.
-    """
-    connect = sqlite3.connect(configuration.database)
-    cursor = connect.cursor()
-    cursor.execute("""SELECT * FROM lectures;""")
-    lectures = cursor.fetchall()
-    cursor.close()
-    connect.close()
-    return lectures
-
-
-def get_w_count(lectures: List, wordacc: float) -> int:
-    """Get the word count of the combined lessons.
-
-    Parameters
-    ----------
-    lectures : list of str
-        The lectures the user choosed for his session.
-    wordacc : float
-        The accuracy of the words the user selected.
-
-    Returns
-    -------
-    int
-        Word count of the selected options.
-    """
-    wordcount = 0
-    connect = sqlite3.connect(configuration.database)
-    for lecture in lectures:
-        cursor = connect.cursor()
-        cursor.execute("""SELECT COUNT(*) FROM words
-                       WHERE lecture_id = (SELECT lecture_id FROM lectures
-                       WHERE lecture_name = ?) AND percentage <= ?;""",
-                       (lecture, wordacc))
-        wordcount += cursor.fetchone()[0]
-        cursor.close()
-    connect.close()
-    return wordcount
-
-
-def create_session(lectures: List, wordacc: float, mode: int):
-    current_session = training.TrainingSession(lectures, wordacc, mode)
+        self.wordcount['text'] = session.get_w_count([self.box_lectures.get(i)
+                                                     for i in
+                                                     self.box_lectures.curselection()],
+                                                     self.var_wordselect.get())

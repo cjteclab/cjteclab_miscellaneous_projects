@@ -1,110 +1,87 @@
 import tkinter as tk
-from tkinter import ttk
-from typing import List
-import sqlite3
-import random
-from app_frames import menu, selecttraining
-import configuration
+from app_frames import menu 
+from app_modules.session import Session as session
 
 # TODO Structure code and recode classes
 
 
 class Training(tk.Frame):
-    def __init__(self, parent):
+    def __init__(self,
+                 parent):
         self.parent = parent
         super().__init__(self.parent)
+        # Start test variables
+        self.lectures = ['human body', 'health and medical care']
+        self.wordacc = 1.0
+        self.mode = 0
+        self.word_ids_list = [1, 7, 8, 4, 10]
+        self.word_count = len(self.word_ids_list)
+        # End test variables
         self.add_widgets()
 
     def add_widgets(self):
-        # Create a Frame for Session Informations.
-        self.frame_navi = tk.LabelFrame(self)
-        self.frame_navi.grid(row=3,
+        # Create widgets for Session Informations.
+        # TODO Create for loop by word_ids from session instance and create WordFrame
+        # Create wordframes in a for loop
+        for item in self.word_ids_list:
+            self.wordframe = WordFrame(self, item)
+        # Create a Button to go back to MainPage.
+        
+        
+
+class WordFrame(tk.LabelFrame):
+    def __init__(self, parent, id: int):
+        self.parent = parent
+        super().__init__(self.parent)
+        self.id = id
+        self.word = session.load_word(self.id)
+        self.add_variables()
+        self.add_widgets()
+        self.add_bindings()
+        self.grid(row=2,
                              column=0,
                              columnspan=2,
                              padx=5,
                              pady=5)
-        # Create widgets for Session Informations.
-        self.label = tk.Label(self.frame_navi,
-                              text='Training Session')
-        self.label.pack()
-        self.progressbar = ttk.Progressbar(self.frame_navi,
-                                           orient='horizintal',
-                                           length=200,
-                                           mode='determinate')
-        self.progressbar.pack()
-        # TODO Create for loop by word_ids from session instance and create WordFrame
-        # Create wordframes in a for loop
-        for item in current_session.word_ids:
-            self.wordframe = WordFrame(self, item)
-            self.wordframe.destroy()
-        self.label_finish = tk.Label(self, text='Training finished')
-        self.label_finish.pack()
         
+    def add_variables(self):
+        self.entryVar = tk.StringVar()
+                
+    def add_widgets(self):
+        self.german_word = tk.Label(self, text=self.word[1])
+        self.german_word.pack()
+        self.english_word = tk.Entry(self,
+                                     textvariable=self.entryVar)
+        self.english_word.pack()
+        self.english_word.focus()
         
-        # Create a Button to go back to MainPage.
-        self.goto_Menu = tk.Button(self,
-                                   text='Return to Menu',
-                                   command=lambda: self.parent.show(menu.Menu))
-        self.goto_Menu.pack()
+        self.label_continue = tk.Label(self)
+        
+    def add_bindings(self):
+        self.english_word.bind('<Return>', self.check_result)
 
+    def check_result(self, event):
+        if self.word[2] == self.entryVar.get():
+            self.word[3] += 1
+            self.label_correct = tk.Label(self,
+                                          text='Correct')
+            self.label_correct.pack()
+        else:
+            self.label_false = tk.Label(self,
+                                        text='False')
+            self.label_false.pack()
+            self.label_correct_answer = tk.Label(self,
+                                                 text=self.word[2])
+            self.label_correct_answer.pack()
+        self.word[4] += 1
+        self.word[5] = self.word[3] / self.word[4]
+        session.save_word(self.word)
+        self.next = tk.Button(self,
+                              text='Next word',
+                              command=self.destroy)
+        self.next.pack()
+        self.next.focus()
+        self.next.bind('<Return>', lambda event: self.destroy())
+        self.next.focus()
 
-class WordFrame(tk.Frame):
-    pass
-
-
-class TrainingSession():
-
-    def __init__(self,
-                 lectures: List,
-                 word_accuracy: float,
-                 mode: int):
-        self.lectures = lectures
-        self.word_accuracy = word_accuracy
-        self.mode = mode
-        self.word_ids = self.load_word_ids(self.lectures,
-                                           self.word_accuracy,
-                                           self.mode)
-        self.word_count = len(self.word_ids)
-
-    def load_word_ids(self,
-                      lectures: List,
-                      word_accuracy: float,
-                      mode: int) -> List:
-        """ Return all word_ids of the words to query.
-
-        Parameters
-        ----------
-        lectures : list of str
-            The lectures the user choosed for his session.
-        wordacc : {1.0, 0.75, 0.5, 0.25}
-            The accuracy of the words the user selected.
-        mode : {0, 1}
-            The query mode the user selected.
-            '0' for ordered and '1' for random query.
-
-        Returns
-        -------
-        list
-            All word_ids of the words for the selected query.
-        """
-        word_ids_session = []
-        connect = sqlite3.connect(configuration.database)
-        connect.row_factory = lambda cursor, row: row[0]
-        cursor = connect.cursor()
-        for lecture in lectures:
-            cursor.execute("""SELECT word_id FROM words
-                           WHERE lecture_id = (SELECT lecture_id FROM lectures
-                           WHERE lecture_name = ?) AND percentage <= ?;""",
-                           (lecture, word_accuracy))
-            word_ids_session += cursor.fetchall()
-        cursor.close()
-        connect.close()
-        if mode == 1:
-            random.shuffle(word_ids_session)
-        return word_ids_session
-
-    def query_session(self, session_words: dict, mode: int):
-        pass
-
-    def save_session(self, session_words: dict):
-        pass
+        
