@@ -46,6 +46,7 @@ class Session():
         connect.close()
         if mode == 1:
             random.shuffle(word_ids)
+        return word_ids
     
     @staticmethod
     def load_word(id: int) -> List:
@@ -126,3 +127,7 @@ class Session():
             cursor.close()
         connect.close()
         return wordcount
+
+    @staticmethod
+    def create_session(lectures: List, wordacc: float, mode: int):
+        new_session = Session(lectures, wordacc, mode)

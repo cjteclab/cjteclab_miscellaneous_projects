@@ -107,9 +107,12 @@ class SelectTraining(tk.Frame):
         # Create Buttons for navigation.
         self.start = tk.Button(self.frame_navi,
                                text='Start Training',
-                               # ! Append command with self.set_selection
-                               command=partial(self.parent.show,
-                                               training.Training))
+                               command=lambda:[session.create_session([self.box_lectures.get(i)
+                                                                      for i in
+                                                                      self.box_lectures.curselection()],
+                                                                      self.var_wordselect.get(),
+                                                                      self.var_querymode.get()),
+                                               self.parent.show(training.Training)])
         self.start.pack()
         # ! When pressing the 'Start Training' button call a Training Instance
         # ! with the name 'current_session'
