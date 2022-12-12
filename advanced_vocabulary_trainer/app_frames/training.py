@@ -12,7 +12,7 @@ class Training(tk.Frame):
         self.parent = parent
         super().__init__(self.parent)
         # Start test variables
-        self.word = [12, 'Name', 'name', 0, 0, 0]
+        self.new_session = session(['human body', 'personal informations'], 1.0, 0)
         self.add_widgets()
         
 
@@ -24,12 +24,20 @@ class Training(tk.Frame):
         self.progress = tk.Label(self.session_info,
                                  text='Test')
         self.progress.pack()
-        self.show_word()
-
-        
-    def show_word(self):
         self.wordframe = tk.LabelFrame(self,
                                        text='Vocabulary') 
+        self.wordframe.pack()
+        self.start_training = tk.Button(self.wordframe,
+                                        text='Start training',
+                                        command=partial(self.show_word,
+                                                        self.new_session.word_ids[self.new_session.word_number]))
+        self.start_training.pack()
+        
+    def show_word(self, id):
+        self.word = session.load_word(id)
+        self.wordframe.destroy()
+        self.wordframe = tk.LabelFrame(self,
+                                        text='Vocabulary')
         self.wordframe.pack()
         self.entryVar = tk.StringVar()
         self.german_word = tk.Label(self.wordframe,
@@ -58,9 +66,29 @@ class Training(tk.Frame):
         self.word[4] += 1
         self.word[5] = self.word[3] / self.word[4]
         session.save_word(self.word)
-        self.next = tk.Button(self,
+        self.new_session.word_number += 1
+        if self.new_session.word_number < (self.new_session.word_count - 1):
+            self.next = tk.Button(self,
                               text='Next word',
-                              command=partial(print, 'tata'))
-        self.next.pack()
+                              command=partial(self.show_word,
+                                              self.new_session.word_ids[self.new_session.word_number]))
+            self.next.pack()
+        else:
+            self.show_result()
         
         
+    def show_result(self):
+        self.result_frame = tk.LabelFrame(self,
+                                          text='Result')
+        self.result_frame.pack()
+        self.test_label = tk.Label(self.result_frame,
+                                   text="tata")
+        self.test_label.pack()
+        self.goto_Menu = tk.Button(self,
+                                   text='Return to Menu',
+                                   command=partial(self.parent.show,
+                                                   menu.Menu))
+        self.goto_Menu.pack()
+        
+def create_training(lectures, wordacc: float, mode: int):
+    new_session = session(lectures, wordacc, mode)

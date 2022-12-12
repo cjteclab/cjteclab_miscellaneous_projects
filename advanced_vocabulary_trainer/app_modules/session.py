@@ -5,6 +5,7 @@ import random
 
 class Session():
     def __init__(self, lectures: List, wordacc: float, mode: int):
+        print('juhu')
         self.lectures = lectures
         self.wordacc = wordacc
         self.mode = mode
@@ -50,6 +51,7 @@ class Session():
     
     @staticmethod
     def load_word(id: int) -> List:
+        
         connect = sqlite3.connect(configuration.database)
         cursor = connect.cursor()
         cursor.execute("""SELECT word_id,
@@ -61,10 +63,10 @@ class Session():
                        FROM words
                        WHERE word_id = ?;""",
                        (id,))
-        current_word = cursor.fetchone()
+        current_word = cursor.fetchall()
         cursor.close()
         connect.close()
-        return list(current_word)
+        return current_word
     
     @staticmethod
     def save_word(word: List):
@@ -128,6 +130,4 @@ class Session():
         connect.close()
         return wordcount
 
-    @staticmethod
-    def create_session(lectures: List, wordacc: float, mode: int):
-        new_session = Session(lectures, wordacc, mode)
+    

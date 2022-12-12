@@ -105,15 +105,10 @@ class SelectTraining(tk.Frame):
                              padx=5,
                              pady=5)
         # Create Buttons for navigation.
-        self.start = tk.Button(self.frame_navi,
-                               text='Start Training',
-                               command=lambda:[session.create_session([self.box_lectures.get(i)
-                                                                      for i in
-                                                                      self.box_lectures.curselection()],
-                                                                      self.var_wordselect.get(),
-                                                                      self.var_querymode.get()),
-                                               self.parent.show(training.Training)])
-        self.start.pack()
+        self.go_to_training = tk.Button(self.frame_navi,
+                               text='Got to Training',
+                               command=lambda: self.parent.show(training.Training))
+        self.go_to_training.pack()
         # ! When pressing the 'Start Training' button call a Training Instance
         # ! with the name 'current_session'
         # Create a Button to go back to MainPage.
