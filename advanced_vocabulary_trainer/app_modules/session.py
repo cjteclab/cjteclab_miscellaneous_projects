@@ -5,7 +5,6 @@ import random
 
 class Session():
     def __init__(self, lectures: List, wordacc: float, mode: int):
-        print('juhu')
         self.lectures = lectures
         self.wordacc = wordacc
         self.mode = mode
@@ -36,6 +35,9 @@ class Session():
         """
         word_ids = []
         connect = sqlite3.connect(configuration.database)
+        # cursor.fetchall normally returns list of tuples,
+        # after following line it will return only a list of ints 
+        connect.row_factory = lambda cursor, row: row[0]
         cursor = connect.cursor()
         for lecture in lectures:
             cursor.execute("""SELECT word_id FROM words
@@ -51,7 +53,6 @@ class Session():
     
     @staticmethod
     def load_word(id: int) -> List:
-        
         connect = sqlite3.connect(configuration.database)
         cursor = connect.cursor()
         cursor.execute("""SELECT word_id,
@@ -66,7 +67,7 @@ class Session():
         current_word = cursor.fetchall()
         cursor.close()
         connect.close()
-        return current_word
+        return list(current_word[0])
     
     @staticmethod
     def save_word(word: List):
@@ -81,6 +82,9 @@ class Session():
                         word[4],
                         word[5],
                         word[0]))
+        connect.commit()
+        cursor.close()
+        connect.close()
 
         
     @staticmethod
