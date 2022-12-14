@@ -12,7 +12,6 @@ class Session():
                                           self.wordacc,
                                           self.mode)
         self.word_count = len(self.word_ids)
-        self.word_number = 0
 
         
     def get_word_ids(self, lectures: List, wordacc: float, mode: int):
@@ -51,23 +50,23 @@ class Session():
             random.shuffle(word_ids)
         return word_ids
     
-    @staticmethod
-    def load_word(id: int) -> List:
-        connect = sqlite3.connect(configuration.database)
-        cursor = connect.cursor()
-        cursor.execute("""SELECT word_id,
-                                 german,
-                                 english,
-                                 correct_count,
-                                 frequency_count,
-                                 percentage
-                       FROM words
-                       WHERE word_id = ?;""",
-                       (id,))
-        current_word = cursor.fetchall()
-        cursor.close()
-        connect.close()
-        return list(current_word[0])
+    def load_word(self) -> List:
+        for i in self.word_ids:
+            connect = sqlite3.connect(configuration.database)
+            cursor = connect.cursor()
+            cursor.execute("""SELECT word_id,
+                                     german,
+                                     english,
+                                     correct_count,
+                                     frequency_count,
+                                     percentage
+                           FROM words
+                           WHERE word_id = ?;""",
+                           (i,))
+            current_word = cursor.fetchall()
+            cursor.close()
+            connect.close()
+            yield list(current_word[0])
     
     @staticmethod
     def save_word(word: List):

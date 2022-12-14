@@ -13,6 +13,7 @@ class Training(tk.Frame):
         super().__init__(self.parent)
         # Start test variables
         self.new_session = session(x, y, z)
+        self.word_func = self.new_session.load_word()
         self.add_widgets()
         
 
@@ -29,30 +30,31 @@ class Training(tk.Frame):
         self.wordframe.pack()
         self.start_training = tk.Button(self.wordframe,
                                         text='Start training',
-                                        command=partial(self.show_word,
-                                                        self.new_session.word_ids[self.new_session.word_number]))
+                                        command=self.show_word)
         self.start_training.pack()
         
-    def show_word(self, id):
+    def show_word(self):
         self.wordframe.destroy()
-        self.word = session.load_word(id)
-        print(self.word)
-        self.wordframe = tk.LabelFrame(self,
-                                        text='Vocabulary')
-        self.wordframe.pack()
-        self.entryVar = tk.StringVar()
-        self.german_word = tk.Label(self.wordframe,
-                                    text=self.word[1])
-        self.german_word.pack()
-        self.english_word = tk.Entry(self.wordframe,
-                                     textvariable=self.entryVar)
-        self.english_word.pack()
-        self.english_word.focus()
+        try:
+            self.word = next(self.word_func)
+            self.wordframe = tk.LabelFrame(self,
+                                           text='Vocabulary')
+            self.wordframe.pack()
+            self.entryVar = tk.StringVar()
+            self.german_word = tk.Label(self.wordframe,
+                                        text=self.word[1])
+            self.german_word.pack()
+            self.english_word = tk.Entry(self.wordframe,
+                                         textvariable=self.entryVar)
+            self.english_word.pack()
+            self.english_word.focus()
         
-        self.english_word.bind('<Return>', self.check_result)
-        self.info = tk.Label(self.wordframe,
+            self.english_word.bind('<Return>', self.check_result)
+            self.info = tk.Label(self.wordframe,
                              text='Press Enter to check result')
-        self.info.pack()
+            self.info.pack()
+        except:
+            self.show_result()
         
     def check_result(self, event):
         if self.word[2] == self.entryVar.get():
@@ -70,18 +72,14 @@ class Training(tk.Frame):
         self.word[4] += 1
         self.word[5] = self.word[3] / self.word[4]
         session.save_word(self.word)
-        self.new_session.word_number += 1
-        if self.new_session.word_number < (self.new_session.word_count - 1):
-            
-            self.next = tk.Button(self.wordframe,
-                                  text='Press Spacebar for the next word',
-                                  command=partial(self.show_word, self.new_session.word_ids[self.new_session.word_number]))
-            self.next.pack()
-            self.next.bind('<space>', lambda event:self.show_word(self.new_session.word_ids[self.new_session.word_number]))
-            self.next.focus()
-        else:
-            self.show_result()
-
+        
+        self.next = tk.Button(self.wordframe,
+                              text='Press Spacebar for the next word',
+                              command=self.show_word)
+        self.next.pack()
+        self.next.bind('<space>', lambda com: self.show_word())
+        self.next.focus()
+       
         
         
     def show_result(self):
