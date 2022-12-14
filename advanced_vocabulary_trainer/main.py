@@ -12,9 +12,9 @@ class VocabularyApp(tk.Tk):
 
     Methods
     -------
-    set_basic_app_infos
+    set_basic_app_infos()
         Set basic informations for root window.
-    show
+    show()
         Pack a specific frame into the root window.
     """
     def __init__(self):

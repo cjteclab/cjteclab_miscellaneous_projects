@@ -1,12 +1,11 @@
 import tkinter as tk
-import sqlite3
 from functools import partial
 from app_frames import training, menu
 from app_modules.session import Session as session
 
 
 class SelectTraining(tk.Frame):
-    """Create SelectTraining frame with its variables, widgets and binding."""
+    """Create SelectTraining frame with its variables, widgets and bindings."""
     def __init__(self, parent):
         self.parent = parent
         super().__init__(self.parent)
@@ -36,6 +35,8 @@ class SelectTraining(tk.Frame):
                                        selectmode='multiple',
                                        width=35,
                                        heigh=10)
+        self.box_lectures.insert('end',
+                                 *[i[1] for i in session.get_lectures()])
         self.box_lectures.grid(column=0,
                                row=1,
                                sticky='nswe')
@@ -46,8 +47,6 @@ class SelectTraining(tk.Frame):
                                 row=1,
                                 sticky='ns')
         self.box_lectures['yscrollcommand'] = self.box_scrollbar.set
-        self.box_lectures.insert('end',
-                                 *[i[1] for i in session.get_lectures()])
         # Create a Frame for words Radiobuttons.
         self.frame_words = tk.LabelFrame(self,
                                          text='Word Selection')
@@ -57,6 +56,8 @@ class SelectTraining(tk.Frame):
                               padx=5,
                               pady=5)
         # Create words Radiobuttons.
+        # With these buttons user can select the word accuracy for the words
+        # that will be query in the vocabulary test session.
         words_buttons = [['All words', 1.0],
                          ['Words below 75% accuracy', 0.75],
                          ['Words below 50% accuracy', 0.5],
@@ -77,7 +78,7 @@ class SelectTraining(tk.Frame):
                                   columnspan=2,
                                   padx=5,
                                   pady=5)
-        # Create a Label for selected word count.
+        # Create a Label for selected words count.
         self.wordcount = tk.Label(self.frame_showcount)
         self.wordcount.pack()
         # Create a Frame for query mode Radiobuttons.
@@ -107,12 +108,17 @@ class SelectTraining(tk.Frame):
         # Create Buttons for navigation.
         self.go_to_training = tk.Button(self.frame_navi,
                                text='Got to Training',
+                               # use lambda func to combine multiple commands
+                               # First command: set global variables with whom 
+                               # a instance of the class session will be created.
+                               # TODO This method work but it very ugly. Recode it!
+                               # Second command: create a frame ot the Training frame.
                                command=lambda:[training.create_training([self.box_lectures.get(i)
-                                                     for i in
-                                                     self.box_lectures.curselection()],
-                                                     self.var_wordselect.get(),
-                                                     self.var_querymode.get()),
-                                   self.parent.show(training.Training)])
+                                                                        for i in
+                                                                        self.box_lectures.curselection()],
+                                                                        self.var_wordselect.get(),
+                                                                        self.var_querymode.get()),
+                                              self.parent.show(training.Training)])
         self.go_to_training.pack()
         # ! When pressing the 'Start Training' button call a Training Instance
         # ! with the name 'current_session'
